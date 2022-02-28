@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import UserResults from '../components/users/UserResults'
 
 const Home = () => {

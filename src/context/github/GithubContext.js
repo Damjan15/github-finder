@@ -8,43 +8,31 @@ export const GithubProvider = ({ children }) => {
     users: [],
     user: {},
     loading: false,
-  }
+  };
 
-  const [ state, dispatch ] = useReducer(githubReducer, initialState)
+  const [state, dispatch] = useReducer(githubReducer, initialState);
 
   const searchUsers = async (text) => {
     setLoading();
 
     const params = new URLSearchParams({
-      q: text
-    })  
-    const res = await fetch(`https://api.github.com/search/users?${params}`, {
-      headers: {
-        Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`
-      }
-    }
-    );
+      q: text,
+    });
+    const res = await fetch(`https://api.github.com/search/users?${params}`);
 
-
-    
     const { items } = await res.json();
 
     dispatch({
       type: "GET_USERS",
-      payload: items
-    })
-  }
+      payload: items,
+    });
+  };
 
   // Get single user
   const getUser = async (login) => {
     setLoading();
-    
-    const res = await fetch(`https://api.github.com/users/${login}`, {
-      headers: {
-        Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`
-      }
-    }
-    );
+
+    const res = await fetch(`https://api.github.com/users/${login}`);
 
     if (res.status === 404) {
       window.location = "/notfound";
@@ -53,28 +41,37 @@ export const GithubProvider = ({ children }) => {
 
       dispatch({
         type: "GET_USER",
-        payload: data
-      })
+        payload: data,
+      });
     }
-
-
-  }
+  };
 
   const clearUsers = () => {
     dispatch({
-      type: "CLEAR_USERS"
-    })
-  }
+      type: "CLEAR_USERS",
+    });
+  };
 
   const setLoading = () => {
     dispatch({
-      type: "SET_LOADING"
-    })
-  }
+      type: "SET_LOADING",
+    });
+  };
 
-  return <GithubContext.Provider value={{ users: state.users, loading: state.loading, user: state.user, searchUsers, getUser, clearUsers }}>
-      { children }
-  </GithubContext.Provider>
+  return (
+    <GithubContext.Provider
+      value={{
+        users: state.users,
+        loading: state.loading,
+        user: state.user,
+        searchUsers,
+        getUser,
+        clearUsers,
+      }}
+    >
+      {children}
+    </GithubContext.Provider>
+  );
 };
 
-export default GithubContext
+export default GithubContext;
